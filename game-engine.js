@@ -366,7 +366,7 @@ const dealOutRewards = async game => {
   if (reward) {
     const rewarded = await gql(`
       mutation grant_reward($${reward}: Int, $gameId: Int) {
-        update_games(where: {id: {_eq: $gameId}}, _set: {${reward}: $${reward}}) {
+        update_games(where: {id: {_eq: $gameId}}, _set: {${reward}: $${reward}, in_conflict: false}) {
           affected_rows
         }
       }
