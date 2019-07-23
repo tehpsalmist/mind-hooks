@@ -371,7 +371,7 @@ const dealOutRewards = async game => {
         }
       }
     `, {
-      [reward]: game[reward] + 1
+      [reward]: incrementRewardWithLimit(game, reward)
     }).catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
 
     if (rewarded instanceof Error) {
@@ -592,4 +592,12 @@ function buildCardRevealQuery (players, variables) {
     ...vars,
     ...updates.variables
   }), variables)]
+}
+
+function incrementRewardWithLimit (game, reward) {
+  const limit = reward === 'lives' ? 5 : 3
+  
+  const nextValue = game[reward] + 1
+  
+  return nextValue > limit ? limit : nextValue
 }
