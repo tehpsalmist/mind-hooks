@@ -50,7 +50,8 @@ module.exports = async (req, res) => {
         return res.status(500).json({ message: 'Failed to Conclude Game' })
       }
 
-      return res.status(200).json({ message: `Game ${game.id} Concluded` })    }
+      return res.status(200).json({ message: `Game ${game.id} Concluded` })
+    }
 
     await sleep(3000)
   }
@@ -90,7 +91,7 @@ module.exports = async (req, res) => {
       return res.status(500).json({ message: 'Error transitioning game' })
     }
 
-    await sleep(1000)
+    await sleep(3000)
 
     await dealOutRewards(transitioningGame)
 
