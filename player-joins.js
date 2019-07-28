@@ -1,13 +1,19 @@
 const { gql } = require('./graphql')
+const { validateRequest } = require('./utilities')
+
+const rejected = validateRequest({
+  tableName: 'players',
+  operation: 'INSERT',
+  dataKeys: ['new'],
+  excludeAdminEvents: true
+})
 
 module.exports = async (req, res) => {
-  const { table = {}, event = {} } = req.body
-
-  if (table.name !== 'players' || event.op !== 'INSERT' || typeof event.data !== 'object') {
-    res.status(204).json({ message: 'irrelevant trigger' })
+  if (rejected(req)) {
+    return res.status(204).json({ message: 'irrelevant trigger' })
   }
 
-  const { new: player } = event.data
+  const player = req.body.event.data.new
   
   const data = await gql(`{
     games_by_pk(id: ${player.game_id}) {

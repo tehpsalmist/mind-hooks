@@ -1,13 +1,19 @@
 const { gql } = require('./graphql')
+const { validateRequest } = require('./utilities')
+
+const rejected = validateRequest({
+  tableName: 'players',
+  operation: 'DELETE',
+  dataKeys: ['old'],
+  excludeAdminEvents: true
+})
 
 module.exports = async (req, res) => {
-  const { table = {}, event = {} } = req.body
-
-  if (table.name !== 'players' || event.op !== 'DELETE' || typeof event.data !== 'object') {
-    res.status(204).json({ message: 'irrelevant trigger' })
+  if (rejected(req)) {
+    return res.status(204).json({ message: 'irrelevant trigger' })
   }
 
-  const { old: player } = event.data
+  const player = req.body.event.data.old
   
   const data = await gql(`{
     games_by_pk(id: ${player.game_id}) {
@@ -24,7 +30,15 @@ module.exports = async (req, res) => {
         }
       }
     }
-  }`).catch(error => console.error('get data error:', error))
+  }`).catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
+    
+  if (data instanceof Error) {
+    return res.status(500).json({ success: false })
+  }
+  
+  if (!data || !data.games_by_pk) {
+    return res.status(204).json({ message: 'irrelevant trigger' })
+  }
   
   const game = data.games_by_pk
   
@@ -34,13 +48,16 @@ module.exports = async (req, res) => {
         delete_players(where: {game_id: {_eq: $gameId}}) {
           affected_rows
         }
+        delete_messages(where: {game_id: {_eq: $gameId}}) {
+          affected_rows
+        }
         delete_games(where: {id: {_eq: $gameId}}) {
           affected_rows
         }
       }
     `, { gameId: game.id }).catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
     
-    if (data instanceof Error) {
+    if (result instanceof Error) {
       return res.status(500).json({ success: false })
     }
   }
@@ -52,7 +69,7 @@ module.exports = async (req, res) => {
       }
     }`, { gameId: game.id }).catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
     
-    if (data instanceof Error) {
+    if (result instanceof Error) {
       return res.status(500).json({ success: false })
     }
   }
