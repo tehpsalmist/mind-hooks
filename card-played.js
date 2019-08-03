@@ -43,6 +43,8 @@ module.exports = async (req, res) => {
       return res.status(500).json({ message: 'error resolving conflict' })
     }
 
+    await sleep(3000)
+
     if (!game.lives || game.lives < 1) {
       const gameConcluded = await concludeGame(game)
 
@@ -52,8 +54,6 @@ module.exports = async (req, res) => {
 
       return res.status(200).json({ message: `Game ${game.id} Concluded` })
     }
-
-    await sleep(3000)
   }
 
   if (!game.finished && !game.in_conflict && !game.transitioning_round && game.players.every(player => !player.cards.length)) {
@@ -72,6 +72,8 @@ module.exports = async (req, res) => {
         return res.status(500).json({ message: 'error resolving conflict' })
       }
 
+      await sleep(3000)
+
       if (!game.lives || game.lives < 1) {
         const gameConcluded = await concludeGame(game)
 
@@ -81,8 +83,6 @@ module.exports = async (req, res) => {
 
         return res.status(200).json({ message: `Game ${game.id} Concluded` })
       }
-
-      await sleep(3000)
     }
 
     const [transitioningGame, nextRound] = await setGameInTransition(game)

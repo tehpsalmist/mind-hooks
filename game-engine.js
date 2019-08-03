@@ -215,7 +215,7 @@ const conflictResolution = game => {
         .filter(c => c < highestPlayedCard)
         .map((value) => ({ user_id: player.user_id, player_id: player.id, value }))
     ], [])
-    .sort((a, b) => a - b)
+    .sort((a, b) => a.value - b.value)
 
   const conflictList = mergeCardLists(recentPlays, missedCards)
 

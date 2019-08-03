@@ -27,22 +27,22 @@ module.exports = async (req, res) => {
   if (!game) return res.status(204).json({ message: 'Unable to fetch game' })
 
   // All Players Are Ready
-  if (!game.ready && !game.in_conflict && game.players.every(player => player.ready)) {
+  if (!game.finished && !game.ready && !game.in_conflict && game.players.every(player => player.ready)) {
     await setGameToReady(game.id)
   }
 
   // A Player Declared Concentration
-  if (game.ready && !game.in_conflict && game.players.some(player => !player.ready)) {
+  if (!game.finished && game.ready && !game.in_conflict && game.players.some(player => !player.ready)) {
     await setGameToNotReady(game)
   }
 
-  if (!game.in_conflict && game.stars > 0 && game.players.every(player => player.suggesting_star)) {
+  if (!game.finished && !game.in_conflict && game.stars > 0 && game.players.every(player => player.suggesting_star)) {
     game = await revealCards(game)
 
     if (!game) return res.status(500).json({ message: 'Error revealing cards' })
   }
 
-  if (!game.transitioning_round && game.players.every(player => !player.cards.length)) {
+  if (!game.finished && !game.transitioning_round && game.players.every(player => !player.cards.length)) {
     const [transitioningGame, nextRound] = await setGameInTransition(game)
 
     if (!transitioningGame) {

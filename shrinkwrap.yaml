@@ -2,6 +2,7 @@ dependencies:
   body-parser: 1.19.0
   express: 4.16.4
   graphql-request: 1.8.2
+  node-fetch: 2.6.0
 packages:
   /accepts/1.3.5:
     dependencies:
@@ -310,6 +311,12 @@ packages:
       node: 4.x || >=6.0.0
     resolution:
       integrity: sha1-q4hOjn5X44qUR1POxwb3iNF2i7U=
+  /node-fetch/2.6.0:
+    dev: false
+    engines:
+      node: 4.x || >=6.0.0
+    resolution:
+      integrity: sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
   /on-finished/2.3.0:
     dependencies:
       ee-first: 1.1.1
@@ -489,3 +496,4 @@ specifiers:
   body-parser: ^1.19.0
   express: ^4.16.4
   graphql-request: ^1.8.2
+  node-fetch: ^2.6.0
