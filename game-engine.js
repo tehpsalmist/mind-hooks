@@ -113,7 +113,7 @@ const isGameConflicted = game => {
     .reduce((lowest, player) => Math.min(lowest, player.cards[0] || 101), 101)
 
   return game.plays
-    .filter(play => play.round_id === game.round.id)
+    .filter(play => play.round_id === game.round.id && !play.reconciled)
     .some(play => {
       if (play.value < lowestUnplayedCard || play.reconciled) {
         lowestUnplayedCard = play.value
@@ -429,7 +429,6 @@ function shuffleAndDeal (players, round) {
 
 function mergeCardLists (staticList, sortedList) {
   const finalList = [...staticList]
-  console.log('final list', finalList)
 
   let staticIndex = 0
   let sortedIndex = 0

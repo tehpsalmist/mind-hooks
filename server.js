@@ -18,3 +18,5 @@ app.get('/clear-db', require('./clear-db'))
 const listener = app.listen(process.env.PORT, () => {
   console.log('The Mind is live on port ' + listener.address().port)
 })
+
+const runTests = require('./test')
