@@ -19,10 +19,9 @@ module.exports = async (req, res) => {
   if (!game) return res.status(204).json({ message: 'Unable to fetch game' })
 
   if (game.started && !game.round) {
-    const startedGame = await startRound(game).catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
+    const startedGame = await startRound(game)
 
-    if (startedGame instanceof Error) {
-      console.error('error starting game', startedGame)
+    if (!startedGame) {
       return res.status(500).json({ message: 'Failed to Start Round' })
     }
   }

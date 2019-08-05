@@ -13,8 +13,6 @@ module.exports = async (req, res) => {
         }
       }
     }`, { userId }).catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
-    
-    console.log(result)
 
     if (result instanceof Error) {
       return res.status(400).json({ success: false })
